@@ -1,0 +1,103 @@
+import math
+import datetime 
+import numpy as np
+import datetime
+import numpy as np
+
+from astropy.coordinates import SkyCoord
+from astropy.time import Time
+
+jupiter = '2023-09-26'
+venus = '2023-01-28'
+mars = '2022-12-01'
+saturn = '2023-08-04'
+neptune = '2022-09-16'
+
+jupiter = datetime.datetime.strptime(jupiter,"%Y-%m-%d")
+venus = datetime.datetime.strptime(venus,"%Y-%m-%d")
+mars = datetime.datetime.strptime(mars,"%Y-%m-%d")
+saturn = datetime.datetime.strptime(saturn,"%Y-%m-%d")
+neptune = datetime.datetime.strptime(neptune,"%Y-%m-%d")
+
+# import ephem
+# from datetime import datetime
+
+# # Create a dictionary mapping planet names to their ephem objects
+# planet_names = {
+#     'Mercury': ephem.Mercury(),
+#     'Venus': ephem.Venus(),
+#     'Mars': ephem.Mars(),
+#     'Jupiter': ephem.Jupiter(),
+#     'Saturn': ephem.Saturn(),
+#     'Uranus': ephem.Uranus(),
+#     'Neptune': ephem.Neptune(),
+# }
+
+# # Get user input for the desired date (in YYYY-MM-DD format)
+# user_date_str = input("Enter a date (YYYY-MM-DD format): ")
+
+# # Convert the user input date string to a datetime object
+# user_date = datetime.strptime(user_date_str, '%Y-%m-%d')
+
+# # Initialize an observer for Earth
+# observer = ephem.Observer()
+# observer.lat = '0'  # Observer's latitude (equator)
+# observer.long = '0'  # Observer's longitude (prime meridian)
+
+# # Initialize variables to track the closest planet and its distance
+# closest_planet = None
+# closest_distance = float('inf')
+
+# # Calculate the positions of the planets on the user-defined date
+# for planet_name, planet_obj in planet_names.items():
+#     planet_obj.compute(user_date)
+#     planet_distance = ephem.separation(planet_obj, observer)
+    
+#     # Check if this planet is closer than the previous closest one
+#     if planet_distance < closest_distance:
+#         closest_distance = planet_distance
+#         closest_planet = planet_name
+
+# print(f"The closest planet to Earth on {user_date_str} will be {closest_planet.capitalize()}")
+
+
+import requests
+from datetime import datetime, timedelta
+
+# Define the target date and planet names
+target_date_str = input("Enter a date (YYYY-MM-DD format): ")
+planet_names = ['Moon','Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
+
+# Convert the target date to a datetime object
+target_date = datetime.strptime(target_date_str, '%Y-%m-%d')
+
+# Initialize variables to track the closest planet and its distance
+closest_planet = None
+closest_distance = float('inf')
+
+# Function to estimate the next closest date based on orbital period
+def estimate_next_closest_date(planet_name):
+    # Orbital periods of the planets in Earth days
+    orbital_periods = {
+        'Moon': 27.3,
+        'Mercury': 88.0,
+        'Venus': 224.7,
+        'Mars': 686.7,
+        'Jupiter': 4333.0,
+        'Saturn': 10759.0,
+        'Uranus': 30689.0,
+        'Neptune': 60190.0
+    }
+
+    orbital_period = orbital_periods[planet_name]
+    days_to_next_closest = orbital_period - (target_date - datetime.now()).days % orbital_period
+    return target_date + timedelta(days=days_to_next_closest)
+
+# Calculate the next closest date for each planet
+for planet_name in planet_names:
+    next_closest_date = estimate_next_closest_date(planet_name)
+    print(f"Next closest date for {planet_name.capitalize()}: {next_closest_date.strftime('%Y-%m-%d')}")
+
+print("Note: These are rough estimates based on orbital periods.")
+
+
